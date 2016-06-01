@@ -4,37 +4,60 @@
 	<title>Weather App</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
 	<script>
+		
+		function callback(cities) {
+			var $datalist = $('#cities-datalist');
+			$.each(cities.RESULTS, function(i, city) {
+				$datalist.append("<option value='" + city.name + "'>")
+			});
+		};
 
 	$(document).ready(function() {
 
-		console.log("Lets code!");
-
 		var $input = $('#ajax-search');
-		var $datalist = $('#cities-datalist');
-
-		$('#ajax-search').on('keypress', function(e) {
-
-		var $query = $('#input').val();
 		
+		$('#ajax-search').on('keyup', function(e) {
+
+		var $query = $('#ajax-search').val();
+
 		$.ajax({
 			type: 'GET',
-			url: 'http://autocomplete.wunderground.com/aq?query=' + query
-		}).done(function(cities){
-			$.each(cities, function(i, city) {
-				$datalist.append("<option value='" + city.name "'>")
-			});
+			url: 'http://autocomplete.wunderground.com/aq',
+			data: {
+				query: $query,
+				cb: 'callback'
+			},
+			dataType: 'jsonp',
 		});
 		
 	  });
+
+			var $city = $('#ajax-search')
+
+			$('#submit').on('click', function() {
+				console.log($city);
+				$('#city-name').html($city.val())
+
+				$.ajax({
+					type: 'GET',
+					url: 'weatherapi'
+					params: cityname, country
+					data
+				})
+			});
 
 	});
 
 	</script>
 </head>
 <body>
-<input type="text" id="ajax-search" list="cities-datalist">
+<!-- <form> -->
+	<input type="text" id="ajax-search" list="cities-datalist">
+	<button id="submit">Submit</button>
+<!-- </form> -->
 <datalist id="cities-datalist">
 	
 </datalist>
+<h3 id="city-name"></h3>
 </body>
 </html>
